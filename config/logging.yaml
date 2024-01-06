@@ -1,0 +1,28 @@
+
+# This configuration file holds settings for filefly's logging feature.
+# Change these to trace issues or debug the program.
+
+# Currently supported logging levels are:
+# 1. error
+# 2. warn
+# 3. info
+# 4. http
+# 5. debug
+# 6. verbose
+
+# NOTE: logging level of "error" has the highest priority and 
+# should always be kept track of. The lower the allowed priority 
+# of logs is allowed, the more fine-grained information will be 
+# logged to the console.
+
+# The logging level for logs displayed in the console window
+console.loggingLevel: debug
+
+# The logging level for log files
+logFile.loggingLevel: debug
+
+# Maximum size of an individual log file
+logFile.maxSize: 50MB
+
+# Maximum amount of log file backlog (in days) to keep track of.
+logFile.backlog: 14d
