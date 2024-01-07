@@ -3,6 +3,7 @@ import c from 'chalk'
 
 import Config from "./lib/config/Config.js"
 import Logger from "./lib/logging/Logger.js"
+import Accounts from './lib/user/Accounts.js'
 
 const logger = Logger.getScope(import.meta.url)
 
@@ -14,6 +15,10 @@ const logger = Logger.getScope(import.meta.url)
 
     // Initialize logging functionality
     await Logger.init()
-    logger.DEBUG('Logger.init() done')
+    logger.INFO('Logger.init() done')
+
+    // Initialize accounts embedded database
+    await Accounts.init()
+    logger.INFO('Accounts.init() done')
 
 })()

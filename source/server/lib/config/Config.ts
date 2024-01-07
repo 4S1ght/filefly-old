@@ -13,11 +13,17 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 // Types ======================================================================
 
+const LogLevel = union([ literal('error'), literal('warn'), literal('info'), literal('http'), literal('debug'), literal('verbose'), ])
+
 const LoggingConfig = object({
-    "console.loggingLevel": string().regex(/error|warn|info|http|debug|verbose/),
-    "logFile.loggingLevel": string().regex(/error|warn|info|http|debug|verbose/),
-    "logFile.maxSize":      string().regex(/^\d+(\.\d+)?(?:B|KB|MB|GB|TB)$/i),
-    "logFile.backlog":      string().regex(/^\d+d$/),
+    console: object({
+        loggingLevel: LogLevel
+    }),
+    logFile: object({
+        loggingLevel: LogLevel,
+        maxSize:      string().regex(/^\d+(\.\d+)?(?:B|KB|MB|GB|TB)$/i),
+        backlog:      string().regex(/^\d+d$/i),
+    })
 })
 
 type TLoggingConfig = z.infer<typeof LoggingConfig>
@@ -29,8 +35,11 @@ export default class Config {
     public static logging: TLoggingConfig
 
     public static init() {
-        
+
+        // Logging config
         this.logging = this.loadConfiguration('../../../../config/logging.yaml', LoggingConfig)
+        this.logging.logFile.maxSize = this.logging.logFile.maxSize.toLowerCase()
+        this.logging.logFile.backlog = this.logging.logFile.backlog.toLowerCase()
 
     }
 

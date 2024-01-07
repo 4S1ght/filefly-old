@@ -55,7 +55,8 @@ export default new class Logger {
                 warn: 1,
                 info: 2,
                 http: 3,
-                debug: 5
+                debug: 5,
+                verbose: 6
             },
             format: winston.format.combine(
                 winston.format.timestamp(),
@@ -64,16 +65,16 @@ export default new class Logger {
             transports: [
                 new winston.transports.Console({
                     format: this.formats.console,
-                    level: Config.logging['console.loggingLevel']
+                    level: Config.logging.console.loggingLevel
                 }),
                 new winston.transports.DailyRotateFile({
                     auditFile:      path.join(__dirname, "../../../logs/log-audit.json"),
                     filename:       path.join(__dirname, "../../../logs/%DATE%.log"),
                     datePattern:    'YYYY-MM-DD',
                     format:         this.formats.file,
-                    level:          Config.logging['logFile.loggingLevel'],
-                    maxSize:        Config.logging['logFile.maxSize'],
-                    maxFiles:       Config.logging['logFile.backlog']
+                    level:          Config.logging.logFile.loggingLevel,
+                    maxSize:        Config.logging.logFile.maxSize,
+                    maxFiles:       Config.logging.logFile.backlog
                 })
             ]
         })
@@ -81,12 +82,9 @@ export default new class Logger {
     }
     
 
-    public getScope(scope: string, masterScope?: string) {
-
-        console.log()
+    public getScope(scope: string) {
 
         let filePath = url.fileURLToPath(scope).replace(path.join(__dirname, '../../'), '')
-        if (masterScope) filePath = `${masterScope}/${filePath}`
 
         return {
             ERROR: (...message: string[]) => this.winston.error(message.join(', '), [filePath]),
@@ -96,6 +94,7 @@ export default new class Logger {
             DEBUG: (...message: string[]) => this.winston.debug(message.join(', '), [filePath]),
             VERB:  (...message: string[]) => this.winston.verbose(message.join(', '), [filePath])
         }
+        
     }
 
 }

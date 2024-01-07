@@ -1,0 +1,35 @@
+
+# This configuration file holds settings responsible for account security
+# Change these to configure username and password requirements.
+
+# NOTE: These settings only apply to newly created accounts or newly changed
+# usernames and passwords. Existing user accounts won't be affected by these 
+# settings as these are only enforced when a user's name or password is 
+# changed or set.
+
+username:
+
+    # Specifies the minimum number of characters for newly chosen usernames
+    minLength: 4
+
+    # Specifies the maximum number of characters for newly chosen usernames
+    maxLength: 50
+
+
+password:
+
+    # Minimum password length in characters
+    minLength: 10
+
+    # Specifies whether newly chosen passwords must include special characters like ._!:/"#
+    useSpecialChars: yes
+
+    # Specifies whether newly chosen passwords should include numbers
+    useNumbers: yes
+
+    # Specifies whether newly chosen passwords should include both big and small symbols
+    useBigAndLittleSymbols: yes
+
+    # Specifies the number of salt rounds used when hashing a new user password.
+    # Do NOT change this value unless you fully understand what you are doing.
+    saltRounds: 10

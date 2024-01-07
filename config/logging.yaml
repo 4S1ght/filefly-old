@@ -15,14 +15,18 @@
 # of logs is allowed, the more fine-grained information will be 
 # logged to the console.
 
-# The logging level for logs displayed in the console window
-console.loggingLevel: debug
+console:
 
-# The logging level for log files
-logFile.loggingLevel: debug
+    # The logging level for logs displayed in the console window
+    loggingLevel: verbose
 
-# Maximum size of an individual log file
-logFile.maxSize: 50MB
+logFile:
 
-# Maximum amount of log file backlog (in days) to keep track of.
-logFile.backlog: 14d
+    # The logging level for log files
+    loggingLevel: verbose
+    
+    # Maximum size of an individual log file
+    maxSize: 50MB
+    
+    # Maximum amount of log file backlog (in days) to keep track of.
+    backlog: 14d
