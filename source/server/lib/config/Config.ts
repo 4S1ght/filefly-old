@@ -23,8 +23,8 @@ const LoggingConfig = object({
     }),
     logFile: object({
         loggingLevel: LogLevel,
-        maxSize:      string().regex(/^\d+(\.\d+)?(?:B|KB|MB|GB|TB)$/i),
-        backlog:      string().regex(/^\d+d$/i),
+        maxSize:      string().regex(/^\d+(\.\d+)?(?:B|KB|MB|GB|TB)$/i).transform(x => x.toLowerCase()),
+        backlog:      string().regex(/^\d+d$/i).transform(x => x.toLowerCase()),
     })
 })
 
@@ -48,24 +48,52 @@ const AccountsConfig = object({
 
 type TAccountsConfig = z.infer<typeof AccountsConfig>
 
+// ======= Security =======
+
+const NetworkConfig = object({
+    expose: object({
+        ip:     union([ string().ip(), literal('localhost') ]),
+        http:   number().min(0).max(65535),
+        https:  number().min(0).max(65535),
+    }),
+    tls: object({
+        enabled:                    boolean(),
+        useSelfSignedCertificate:   boolean(),
+        external: object({
+            cert:       string(),
+            privateKey: string()
+        }),
+        selfSigned: object({
+            lifetime:           number().min(7).max(365),
+            alg:                string().regex(/sha256|sha384|sha512/i),
+            keySize:            number(),
+            commonName:         string().min(5).max(70),
+            countryName:        string().min(5).max(70),
+            localityName:       string().min(5).max(70),
+            organizationName:   string().min(5).max(70),
+        })
+    })
+})
+
+type TNetworkConfig = z.infer<typeof NetworkConfig>
+
+
 // Implementation =============================================================
 
 export default class Config {
 
     public static logging: TLoggingConfig
     public static accounts: TAccountsConfig
+    public static network: TNetworkConfig
 
     public static init() {
 
         // Logging
         this.logging = this.loadConfiguration('../../../../config/logging.yaml', LoggingConfig)
-        this.logging.logFile.maxSize = this.logging.logFile.maxSize.toLowerCase()
-        this.logging.logFile.backlog = this.logging.logFile.backlog.toLowerCase()
-        
         // Accounts
         this.accounts = this.loadConfiguration('../../../../config/accounts.yaml', AccountsConfig)
-
-        console.log(this)
+        // Network security
+        this.network = this.loadConfiguration('../../../../config/network.yaml', NetworkConfig)
 
     }
 

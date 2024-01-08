@@ -1,0 +1,67 @@
+
+# Network configuration
+expose:
+
+    # Interface to listen on
+    ip: localhost
+
+    # Port to listen on in HTTP mode.
+    http: 80
+
+    # Port to listen on in HTTPS mode - With TLS/encryption enabled.
+    https: 443
+
+# TLS configuration
+tls:
+
+    # Dictates whether the server should use SSL encryption.
+    # If set to "yes", the server will run in HTTPS mode on port defined in "expose > httpsPort".
+    # If set to "no", no encryption and plain HTTP will be used, running on port "expose > httpPort".
+    # ---
+    # NOTE: Disabling HTTPS will cause all server traffic to be unencrypted.
+    # Anybody with basic knowledge of packet sniffing will be able to capture
+    # your credentials, steal your sessions, access your account and see all the
+    # files you download/upload/view in real time.
+    # Only use HTTP in private LAN networks or behind a secured proxy server.
+    enabled: yes
+
+    # Dictates whether to use a self-signed or an external SSL certificate.
+    useSelfSignedCertificate: yes
+
+    # External SSL certificate configuration
+    external:
+
+        # Path to the SSL certificate
+        cert: /etc/ssl/certs/filefly/cert.pem
+        
+        # Path to the private key
+        privateKey: /etc/ssl/certs/filefly/private_key.pem
+
+    # Self-signed SSL certificate configuration.
+    # Filefly automatically generates self-signed SSL certificates.
+    # Do NOT change these settings unless you know what you are doing.
+
+    selfSigned:
+
+        # Certificate lifetime (in days)
+        lifetime: 90
+
+        # Encryption algorithm. Available: sha256, sha384, sha512
+        alg: sha256
+
+        # Encryption key size - Larger sizes provide higher security, but can heavily impact 
+        # the server's speed.
+        keySize: 4096
+
+        # Certificate party/owner name
+        commonName: Filefly
+
+        # Country name
+        countryName: Undisclosed
+
+        # Locality name
+        localityName: Undisclosed
+
+        # Organization the certificate is issued to.
+        organizationName: Undisclosed
+

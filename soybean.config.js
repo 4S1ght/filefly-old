@@ -8,9 +8,18 @@ export default Soybean({
                 h.fs.mkdir('./.build/{{value}}')
             ]))
         ],
-        watch: []
+        watch: [
+            {
+                file: './.build/server/',
+                handle: h.cp.restart('serve'),
+                options: { recursive: true }
+            }
+        ]
     },
     cp: {
+        serve: {
+            command: ['node', '--enable-source-maps', './.build/server/index.js']
+        },
         vite: {
             command: ['npm', 'run', 'dev'],
             cwd: './source/client/',

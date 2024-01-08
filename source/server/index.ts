@@ -4,6 +4,7 @@ import c from 'chalk'
 import Config from "./lib/config/Config.js"
 import Logger from "./lib/logging/Logger.js"
 import Accounts from './lib/user/Accounts.js'
+import API from './lib/api/v1/API.js'
 
 const logger = Logger.getScope(import.meta.url)
 
@@ -20,5 +21,9 @@ const logger = Logger.getScope(import.meta.url)
     // Initialize accounts embedded database
     await Accounts.init()
     logger.INFO('Accounts.init() done')
+    
+    // Initialize the API and start listening
+    await API.init()
+    logger.INFO('API.init() done')
 
 })()
