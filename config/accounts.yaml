@@ -22,7 +22,7 @@ password:
     minLength: 10
 
     # Specifies whether newly chosen passwords must include special characters like ._!:/"#
-    useSpecialChars: yes
+    useSpecialCharacters: yes
 
     # Specifies whether newly chosen passwords should include numbers
     useNumbers: yes

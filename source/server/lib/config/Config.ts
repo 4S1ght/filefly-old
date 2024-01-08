@@ -13,7 +13,9 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url))
 
 // Types ======================================================================
 
-const LogLevel = union([ literal('error'), literal('warn'), literal('info'), literal('http'), literal('debug'), literal('verbose'), ])
+const LogLevel = union([ literal('error'), literal('warn'), literal('info'), literal('http'), literal('debug'), literal('verbose') ])
+
+// ======= Logging =======
 
 const LoggingConfig = object({
     console: object({
@@ -28,18 +30,42 @@ const LoggingConfig = object({
 
 type TLoggingConfig = z.infer<typeof LoggingConfig>
 
+// ======= Accounts =======
+
+const AccountsConfig = object({
+    username: object({
+        minLength: number().min(4),
+        maxLength: number().max(150)
+    }),
+    password: object({
+        minLength:              number().min(10),
+        useSpecialCharacters:   boolean(),
+        useNumbers:             boolean(),
+        useBigAndLittleSymbols: boolean(),
+        saltRounds:             number().min(10)
+    })
+})
+
+type TAccountsConfig = z.infer<typeof AccountsConfig>
+
 // Implementation =============================================================
 
 export default class Config {
 
     public static logging: TLoggingConfig
+    public static accounts: TAccountsConfig
 
     public static init() {
 
-        // Logging config
+        // Logging
         this.logging = this.loadConfiguration('../../../../config/logging.yaml', LoggingConfig)
         this.logging.logFile.maxSize = this.logging.logFile.maxSize.toLowerCase()
         this.logging.logFile.backlog = this.logging.logFile.backlog.toLowerCase()
+        
+        // Accounts
+        this.accounts = this.loadConfiguration('../../../../config/accounts.yaml', AccountsConfig)
+
+        console.log(this)
 
     }
 
@@ -54,7 +80,7 @@ export default class Config {
         }
 
         try {
-            config = yaml.parse(fs.readFileSync(path.join(__dirname, file), 'utf-8'))
+            config = yaml.parse(fs.readFileSync(path.join(__dirname, file), 'utf-8'), this.reviver, {})
             schema.parse(config)
             return config
         } 
@@ -74,6 +100,13 @@ export default class Config {
             }        
         }
 
+    }
+
+    private static reviver = (key: unknown, value: unknown): any => {
+        // Booleans
+        if (value === 'yes') return true
+        if (value === 'no') return false
+        return value
     }
 
 }
