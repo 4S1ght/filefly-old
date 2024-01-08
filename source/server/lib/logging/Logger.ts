@@ -30,12 +30,12 @@ export default new class Logger {
     }
 
     private labelsColored: Record<string, string> =  {
-        error:   c.redBright('ERRO'),
-        warn:    c.yellowBright('WARN'),
-        info:    c.greenBright('INFO'),
-        http:    c.blueBright('HTTP'),
-        debug:   c.magentaBright('DEBG'),
-        verbose: c.cyanBright('VERB')
+        error:   c.red('ERRO'),
+        warn:    c.yellow('WARN'),
+        info:    c.green('INFO'),
+        http:    c.blue('HTTP'),
+        debug:   c.magenta('DEBG'),
+        verbose: c.cyan('VERB')
     }
 
     private formats = {
@@ -82,17 +82,24 @@ export default new class Logger {
     }
     
 
-    public getScope(scope: string) {
+    public getScope(scope: string, masterScope: string | undefined = undefined) {
 
-        let filePath = url.fileURLToPath(scope).replace(path.join(__dirname, '../../'), '')
+        let filePath = url.fileURLToPath(scope)
+            .replace(path.join(__dirname, '../../'), '')
+            .replace(/\\|\//g, '.')
+            .replace('.js', '')
+
+        if (masterScope) filePath = masterScope
+
+        const mapMessage = (message: (string|object)[]) => message.map(x => typeof x === 'object' ? JSON.stringify(x) : x).join(' ')
 
         return {
-            ERROR: (...message: string[]) => this.winston.error(message.join(', '), [filePath]),
-            WARN:  (...message: string[]) => this.winston.warn(message.join(', '), [filePath]),
-            INFO:  (...message: string[]) => this.winston.info(message.join(', '), [filePath]),
-            HTTP:  (...message: string[]) => this.winston.http(message.join(', '), [filePath]),
-            DEBUG: (...message: string[]) => this.winston.debug(message.join(', '), [filePath]),
-            VERB:  (...message: string[]) => this.winston.verbose(message.join(', '), [filePath])
+            ERROR: (...message: (string|object)[]) => this.winston.error(mapMessage(message), [filePath]),
+            WARN:  (...message: (string|object)[]) => this.winston.warn(mapMessage(message), [filePath]),
+            INFO:  (...message: (string|object)[]) => this.winston.info(mapMessage(message), [filePath]),
+            HTTP:  (...message: (string|object)[]) => this.winston.http(mapMessage(message), [filePath]),
+            DEBUG: (...message: (string|object)[]) => this.winston.debug(mapMessage(message), [filePath]),
+            VERB:  (...message: (string|object)[]) => this.winston.verbose(mapMessage(message), [filePath])
         }
         
     }

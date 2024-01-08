@@ -3,13 +3,28 @@
 expose:
 
     # Interface to listen on
-    ip: localhost
+    ip: 0.0.0.0
 
     # Port to listen on in HTTP mode.
     http: 80
 
     # Port to listen on in HTTPS mode - With TLS/encryption enabled.
     https: 443
+
+# Request rate limiting settings
+rateLimiting:
+
+    # Enables/disables API request rate limiting.
+    enabled: yes
+
+    # Maximum number of requests an individual client can make
+    # in a given time window.
+    limit: 300
+
+    # Time window after which the rate limit is lifted
+    # for an individual client (in seconds)
+    timeWindow: 60
+
 
 # TLS configuration
 tls:

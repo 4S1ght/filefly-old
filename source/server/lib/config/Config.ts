@@ -56,6 +56,11 @@ const NetworkConfig = object({
         http:   number().min(0).max(65535),
         https:  number().min(0).max(65535),
     }),
+    rateLimiting: object({
+        enabled:    boolean(),
+        limit:      number().min(60),
+        timeWindow: number().min(60)
+    }),
     tls: object({
         enabled:                    boolean(),
         useSelfSignedCertificate:   boolean(),

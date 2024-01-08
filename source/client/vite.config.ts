@@ -6,6 +6,11 @@ export default defineConfig({
     plugins: [svelte()],
     build: {
         outDir: "../../.build/client/"
+    },
+    server: {
+        proxy: {
+            '/api': "http://localhost:80"
+        }
     }
 })
 

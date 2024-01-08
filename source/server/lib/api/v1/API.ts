@@ -1,6 +1,7 @@
 
 // Imports ====================================================================
 
+import path from 'path'
 import http from 'http'
 import https from 'https'
 import express from 'express'
@@ -18,6 +19,8 @@ const logger = Logger.getScope(import.meta.url, )
 
 import cookieParser from 'cookie-parser'
 import bodyParser from 'body-parser'
+import rateLimit from 'express-rate-limit'
+import RequestLogger from './middleware/RequestLogger.js'
 
 // Types ======================================================================
 
@@ -44,16 +47,40 @@ export default class API {
         this.bindAPI()
 
         await new Promise<void>(resolve => self.server.listen(Config.network.expose.http, Config.network.expose.ip, () => {
-            logger.INFO(`Listening on port ${Config.network.expose.http}`)
+            const adr = self.server.address()!
+            logger.INFO(`Listening on`, typeof adr === 'string' ? adr : `${adr.address}:${adr.port} (${adr.family})`)
             resolve()
         }))
 
     }
 
     private static bindAPI() {
+
+        const useRateLimit = Config.network.rateLimiting.enabled
+        const rateLimitOptions: Parameters<typeof rateLimit>[0] = {
+            windowMs: Config.network.rateLimiting.timeWindow * 1000,
+            limit: Config.network.rateLimiting.limit,
+            standardHeaders: 'draft-7',
+            legacyHeaders: true
+        }
+
+        const apiRouter = express.Router()
+        const staticRouter = express.static(path.join(__dirname, '../../../../../.build/client'))
         
-        this.i.app.use(bodyParser.json())
-        this.i.app.use(cookieParser())
+        if (useRateLimit) {
+            this.i.app.use(rateLimit(rateLimitOptions))
+            logger.DEBUG(`Enabled rate limiting | window:${rateLimitOptions.windowMs} limit:${rateLimitOptions.limit}`)
+            logger.VERB(`rateLimitOptions`, rateLimitOptions)
+        }
+
+        apiRouter.use(bodyParser.json())
+        apiRouter.use(cookieParser())
+
+        this.i.app.use(RequestLogger.logger)
+
+        this.i.app.use('/api', apiRouter)
+        this.i.app.use('/', staticRouter)
+
     }
     
 }
