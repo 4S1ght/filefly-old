@@ -40,6 +40,7 @@ export default class API {
         this.i = self
 
         self.app = express()
+        self.app.disable('x-powered-by')
 
         logger.WARN(`Server running in HTTP mode`)
         self.server = http.createServer(self.app)
@@ -61,7 +62,7 @@ export default class API {
             windowMs: Config.network.rateLimiting.timeWindow * 1000,
             limit: Config.network.rateLimiting.limit,
             standardHeaders: 'draft-7',
-            legacyHeaders: true
+            legacyHeaders: false
         }
 
         const apiRouter = express.Router()
