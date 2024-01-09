@@ -65,19 +65,22 @@ export default class Accounts {
         self.slPreferences = self.db.sublevel<string, TDBAccountPreferencesEntry>('accounts', slOptions)
 
         await new Promise<void>((resolve, reject) => self.db.defer(() => {
-            if (self.db.status === 'closed') reject()
+            if (self.db.status === 'closed') reject(new Error('Accounts database is already closed.'))
             else resolve()
         }))
 
         // Automatically create an administrator account if there are none
         const users = await self.list()
         if (users.length === 0) {
-            logger.WARN(`A default administrator account was created | username: "admin", password: "admin"`)
             await self.create({
                 name: 'admin',
                 pass: 'admin',
                 root: true
             }, true)
+            logger.WARN(
+                `!! IMPORTANT !! A default administrator account was created with username "admin" and password "admin".`,
+                `Update the password immediately!`
+            )
         }
 
     }

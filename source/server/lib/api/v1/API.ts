@@ -66,7 +66,7 @@ export default class API {
         }
 
         const apiRouter = express.Router()
-        const staticRouter = express.static(path.join(__dirname, '../../../../../.build/client'))
+        const staticRouter = express.static(path.join(__dirname, '../../../../../build/client'))
         
         if (useRateLimit) {
             this.i.app.use(rateLimit(rateLimitOptions))

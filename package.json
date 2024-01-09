@@ -29,6 +29,6 @@
         "zod": "^3.22.4"
     },
     "scripts": {
-        "serve": "node --enable-source-maps ./.build/server/index.js"
+        "serve": "node --enable-source-maps ./build/server/index.js"
     }
 }
