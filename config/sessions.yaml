@@ -1,0 +1,8 @@
+
+# The duration of a default user session, when "remember be"
+# is unchecked (in minutes)
+duration: 60
+
+# The duration of an extended session, when "remember me" is checked.
+# (in days)
+extendedDuration: 7

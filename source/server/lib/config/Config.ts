@@ -34,32 +34,41 @@ type TLoggingConfig = z.infer<typeof LoggingConfig>
 
 const AccountsConfig = object({
     username: object({
-        minLength: number().min(4),
-        maxLength: number().max(150)
+        minLength: number().int().min(4),
+        maxLength: number().int().max(150)
     }),
     password: object({
-        minLength:              number().min(10),
+        minLength:              number().int().min(10),
         useSpecialCharacters:   boolean(),
         useNumbers:             boolean(),
         useBigAndLittleSymbols: boolean(),
-        saltRounds:             number().min(10)
+        saltRounds:             number().int().min(10)
     })
 })
 
 type TAccountsConfig = z.infer<typeof AccountsConfig>
+
+// ======= Sessions =======
+
+const SessionsConfig = object({
+    duration: number().int().min(5),
+    extendedDuration: number().int().min(1)
+})
+
+type TSessionsConfig = z.infer<typeof SessionsConfig>
 
 // ======= Security =======
 
 const NetworkConfig = object({
     expose: object({
         ip:     union([ string().ip(), literal('localhost') ]),
-        http:   number().min(0).max(65535),
-        https:  number().min(0).max(65535),
+        http:   number().int().min(0).max(65535),
+        https:  number().int().min(0).max(65535),
     }),
     rateLimiting: object({
         enabled:    boolean(),
-        limit:      number().min(60),
-        timeWindow: number().min(60)
+        limit:      number().int().min(60),
+        timeWindow: number().int().min(60)
     }),
     tls: object({
         enabled:                    boolean(),
@@ -69,7 +78,7 @@ const NetworkConfig = object({
             privateKey: string()
         }),
         selfSigned: object({
-            lifetime:           number().min(7).max(365),
+            lifetime:           number().int().min(7).max(365),
             alg:                string().regex(/sha256|sha384|sha512/i),
             keySize:            number(),
             commonName:         string().min(5).max(70),
@@ -89,6 +98,7 @@ export default class Config {
 
     public static logging: TLoggingConfig
     public static accounts: TAccountsConfig
+    public static sessions: TSessionsConfig
     public static network: TNetworkConfig
 
     public static init() {
@@ -97,6 +107,8 @@ export default class Config {
         this.logging = this.loadConfiguration('../../../../config/logging.yaml', LoggingConfig)
         // Accounts
         this.accounts = this.loadConfiguration('../../../../config/accounts.yaml', AccountsConfig)
+        // Sessions
+        this.sessions = this.loadConfiguration('../../../../config/sessions.yaml', SessionsConfig)
         // Network security
         this.network = this.loadConfiguration('../../../../config/network.yaml', NetworkConfig)
 

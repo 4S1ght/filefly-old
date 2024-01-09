@@ -12,6 +12,8 @@ expose:
     https: 443
 
 # Request rate limiting settings
+# Use these settings to adjust rate limiting if the machine is WAN-exposed
+# or if it's incapable of handling many requests.
 rateLimiting:
 
     # Enables/disables API request rate limiting.
