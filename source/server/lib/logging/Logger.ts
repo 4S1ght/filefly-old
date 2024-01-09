@@ -91,15 +91,19 @@ export default new class Logger {
 
         if (masterScope) filePath = masterScope
 
-        const mapMessage = (message: (string|object)[]) => message.map(x => typeof x === 'object' ? JSON.stringify(x) : x).join(' ')
+        const mapMessage = (message: (string|object)[]) => message.map(x => {
+            if (x instanceof Error) return `${x.message} \n${x.stack}`
+            if (typeof x === 'object') return JSON.stringify(x)
+            return x
+        }).join(' ')
 
         return {
-            ERROR: (...message: (string|object)[]) => this.winston.error(mapMessage(message), [filePath]),
-            WARN:  (...message: (string|object)[]) => this.winston.warn(mapMessage(message), [filePath]),
-            INFO:  (...message: (string|object)[]) => this.winston.info(mapMessage(message), [filePath]),
-            HTTP:  (...message: (string|object)[]) => this.winston.http(mapMessage(message), [filePath]),
-            DEBUG: (...message: (string|object)[]) => this.winston.debug(mapMessage(message), [filePath]),
-            VERB:  (...message: (string|object)[]) => this.winston.verbose(mapMessage(message), [filePath])
+            ERROR: (...message: (string|object|Error)[]) => this.winston.error(mapMessage(message), [filePath]),
+            WARN:  (...message: (string|object|Error)[]) => this.winston.warn(mapMessage(message), [filePath]),
+            INFO:  (...message: (string|object|Error)[]) => this.winston.info(mapMessage(message), [filePath]),
+            HTTP:  (...message: (string|object|Error)[]) => this.winston.http(mapMessage(message), [filePath]),
+            DEBUG: (...message: (string|object|Error)[]) => this.winston.debug(mapMessage(message), [filePath]),
+            VERB:  (...message: (string|object|Error)[]) => this.winston.verbose(mapMessage(message), [filePath])
         }
         
     }

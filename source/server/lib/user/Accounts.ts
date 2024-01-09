@@ -32,19 +32,13 @@ export interface TDBAccountPreferencesEntry {
 
 // Implementation =============================================================
 
-export default class Accounts {
-
-    // Accounts class instance
-    public static i: Accounts
+export default new class Accounts {
 
     public declare db:              ClassicLevel<string, never>
     private declare slAccounts:     AbstractSublevel<typeof this.db, string | Buffer | Uint8Array, string, /* type */ TDBAccountEntry>
     private declare slPreferences:  AbstractSublevel<typeof this.db, string | Buffer | Uint8Array, string, /* type */ TDBAccountPreferencesEntry>
 
-    public static async init() {
-
-        const self = new this()
-        this.i = self
+    public async init() {
 
         const dbLocation = path.join(__dirname, '../../../db/accounts')
         const dbOptions: DatabaseOptions<string, never> = {
@@ -60,19 +54,18 @@ export default class Accounts {
 
         // Open the database
         logger.INFO('Opening accounts database') 
-        self.db = new ClassicLevel(dbLocation, dbOptions)
-        self.slAccounts = self.db.sublevel<string, TDBAccountEntry>('accounts', slOptions)
-        self.slPreferences = self.db.sublevel<string, TDBAccountPreferencesEntry>('accounts', slOptions)
+        this.db = new ClassicLevel(dbLocation, dbOptions)
+        this.slAccounts = this.db.sublevel<string, TDBAccountEntry>('accounts', slOptions)
+        this.slPreferences = this.db.sublevel<string, TDBAccountPreferencesEntry>('accounts', slOptions)
 
-        await new Promise<void>((resolve, reject) => self.db.defer(() => {
-            if (self.db.status === 'closed') reject(new Error('Accounts database is already closed.'))
+        await new Promise<void>((resolve, reject) => this.db.defer(() => {
+            if (this.db.status === 'closed') reject(new Error('Accounts database is already closed.'))
             else resolve()
         }))
 
         // Automatically create an administrator account if there are none
-        const users = await self.list()
-        if (users.length === 0) {
-            await self.create({
+        if ((await this.list()).length === 0) {
+            await this.create({
                 name: 'admin',
                 pass: 'admin',
                 root: true
@@ -83,6 +76,10 @@ export default class Accounts {
             )
         }
 
+    }
+
+    public async close() {
+        await this.db.close()
     }
     
     

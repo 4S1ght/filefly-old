@@ -55,6 +55,14 @@ export default class API {
 
     }
 
+    public static close() {
+        return new Promise<void>((resolve, reject) => {
+            this.i.server.close((error) => {
+                error ? reject(error) : resolve()
+            })
+        })
+    }
+
     private static bindAPI() {
 
         const useRateLimit = Config.network.rateLimiting.enabled
@@ -71,7 +79,7 @@ export default class API {
         if (useRateLimit) {
             this.i.app.use(rateLimit(rateLimitOptions))
             logger.DEBUG(`Enabled rate limiting | window:${rateLimitOptions.windowMs} limit:${rateLimitOptions.limit}`)
-            logger.VERB(`rateLimitOptions`, rateLimitOptions)
+            logger.VERB(`API.bindAPI() call: rateLimitOptions`, rateLimitOptions)
         }
 
         apiRouter.use(bodyParser.json())
