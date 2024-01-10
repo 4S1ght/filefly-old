@@ -3,6 +3,12 @@
 # is unchecked (in minutes)
 duration: 60
 
+# The duration of elevated sessions (in minutes)
+# When an administrator account is being elevated in order to administer
+# the server, their session will become an "elevated" session and will
+# quickly expire to retain security.
+elevatedDuration: 5
+
 # The duration of an extended session, when "remember me" is checked.
 # (in days)
 extendedDuration: 7

@@ -1,7 +1,6 @@
 
 import { Soybean, handlers as h } from 'Soybean'
 
-
 export default Soybean({
     routines: {
         launch: [

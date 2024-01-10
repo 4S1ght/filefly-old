@@ -51,8 +51,9 @@ type TAccountsConfig = z.infer<typeof AccountsConfig>
 // ======= Sessions =======
 
 const SessionsConfig = object({
-    duration: number().int().min(5),
-    extendedDuration: number().int().min(1)
+    duration:           number().int().min(5),
+    elevatedDuration:   number().int().min(1),
+    extendedDuration:   number().int().min(1)
 })
 
 type TSessionsConfig = z.infer<typeof SessionsConfig>

@@ -24,46 +24,49 @@ import RequestLogger from './middleware/RequestLogger.js'
 
 // Types ======================================================================
 
+export type TMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => any
+export type THandler = (req: express.Request, res: express.Response) => any
+
+export type THandlerSetup = () => THandler
+
+// Handlers ===================================================================
+
+import login from './post/Login.js'
+
 // Implementation =============================================================
  
-
-export default class API {
+export default new class API {
 
     private declare app: express.Express
     private declare server: http.Server | https.Server
 
-    public static i: API
+    public async init() {
 
-    public static async init() {
-
-        const self = new this()
-        this.i = self
-
-        self.app = express()
-        self.app.disable('x-powered-by')
+        this.app = express()
+        this.app.disable('x-powered-by')
 
         logger.WARN(`Server running in HTTP mode`)
-        self.server = http.createServer(self.app)
+        this.server = http.createServer(this.app)
 
         this.bindAPI()
 
-        await new Promise<void>(resolve => self.server.listen(Config.network.expose.http, Config.network.expose.ip, () => {
-            const adr = self.server.address()!
+        await new Promise<void>(resolve => this.server.listen(Config.network.expose.http, Config.network.expose.ip, () => {
+            const adr = this.server.address()!
             logger.INFO(`Listening on`, typeof adr === 'string' ? adr : `${adr.address}:${adr.port} (${adr.family})`)
             resolve()
         }))
 
     }
 
-    public static close() {
+    public close() {
         return new Promise<void>((resolve, reject) => {
-            this.i.server.close((error) => {
+            this.server.close((error) => {
                 error ? reject(error) : resolve()
             })
         })
     }
 
-    private static bindAPI() {
+    private bindAPI() {
 
         const useRateLimit = Config.network.rateLimiting.enabled
         const rateLimitOptions: Parameters<typeof rateLimit>[0] = {
@@ -77,18 +80,19 @@ export default class API {
         const staticRouter = express.static(path.join(__dirname, '../../../../../build/client'))
         
         if (useRateLimit) {
-            this.i.app.use(rateLimit(rateLimitOptions))
+            this.app.use(rateLimit(rateLimitOptions))
             logger.DEBUG(`Enabled rate limiting | window:${rateLimitOptions.windowMs} limit:${rateLimitOptions.limit}`)
             logger.VERB(`API.bindAPI() call: rateLimitOptions`, rateLimitOptions)
         }
 
+        this.app.use(RequestLogger.logger)
+        this.app.use('/api/v1', apiRouter)
+        this.app.use('/', staticRouter)
+
         apiRouter.use(bodyParser.json())
         apiRouter.use(cookieParser())
 
-        this.i.app.use(RequestLogger.logger)
-
-        this.i.app.use('/api', apiRouter)
-        this.i.app.use('/', staticRouter)
+        apiRouter.post('/user/login', login())
 
     }
     

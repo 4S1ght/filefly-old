@@ -13,7 +13,7 @@ import Config from '../../../config/Config.js'
 
 // Types ======================================================================
 
-export type TMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => any
+import type { TMiddleware } from '../API.js'
 
 // Implementation =============================================================
 
@@ -41,14 +41,19 @@ export default class RequestLogger {
         const id = this.getRequestID()
         const method = c.green(req.method)
         const ip = c.grey(req.ip)
+        const ua = req.headers['user-agent'] || 'N/A'
         const url = req.originalUrl
         const start = Date.now()
         const blankStatus = c.grey('###')
+        const blankTime = c.grey('#####')
         const reqSign = c.grey('req')
         const resSign = c.whiteBright('res')
 
-        logger.HTTP(`${id} ${reqSign} ${method} ${blankStatus} ${ip} ${url}`)
-        res.on('finish', () => logger.HTTP(`${id} ${resSign} ${method} ${this.getStatusCodeColor(res.statusCode)} ${ip} ${c.whiteBright(Date.now()-start+'ms')} ${url}`))
+        logger.HTTP(`${id} ${reqSign} ${method} ${blankStatus} ${ip} ${blankTime} ${url} / ${ua}`)
+        res.on('finish', () => {
+            const time = (Date.now() - start + 'ms').padEnd(5, ' ')
+            logger.HTTP(`${id} ${resSign} ${method} ${this.getStatusCodeColor(res.statusCode)} ${ip} ${time} ${url}`)
+        })
     
         next()
     }

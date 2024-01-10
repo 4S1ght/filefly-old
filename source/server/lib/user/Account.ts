@@ -126,6 +126,7 @@ export default new class Accounts {
 
         } 
         catch (error) {
+            logger.ERROR(`Accounts.create() error:`, error as Error)
             return error as Error
         }
     }

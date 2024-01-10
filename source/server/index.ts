@@ -3,7 +3,7 @@ import { once } from "./lib/_helpers_.js"
 
 import Config from "./lib/config/Config.js"
 import Logger from "./lib/logging/Logger.js"
-import Accounts from './lib/user/Accounts.js'
+import Accounts from './lib/user/Account.js'
 import API from './lib/api/v1/API.js'
 
 const logger = Logger.getScope(import.meta.url)
