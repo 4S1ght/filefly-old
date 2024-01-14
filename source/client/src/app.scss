@@ -1,0 +1,20 @@
+
+// Temporary font imports
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+:root {
+    
+    // Bodies / large blanks
+    --c-bg-body: #141317;
+    --c-fg-body: #ffffff;
+
+}
+
+body {
+    background-color: var(--c-bg-body);
+    margin: 0;
+    color: var(--c-fg-body);
+    font-family: 'Roboto';
+    font-weight: 400;
+    font-size: 12;
+}
