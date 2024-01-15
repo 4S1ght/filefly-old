@@ -50,7 +50,9 @@ export default new class API {
 
         this.bindAPI()
 
-        await new Promise<void>(resolve => this.server.listen(Config.network.expose.http, Config.network.expose.ip, () => {
+        // TODO: Use specified hostname in PROD and omit it in DEV
+        // await new Promise<void>(resolve => this.server.listen(Config.network.expose.http, Config.network.expose.ip, () => {
+        await new Promise<void>(resolve => this.server.listen(Config.network.expose.http, () => {
             const adr = this.server.address()!
             logger.INFO(`Listening on`, typeof adr === 'string' ? adr : `${adr.address}:${adr.port} (${adr.family})`)
             resolve()
@@ -92,7 +94,7 @@ export default new class API {
         apiRouter.use(bodyParser.json())
         apiRouter.use(cookieParser())
 
-        apiRouter.post('/user/login', login())
+        apiRouter.post('/session/new', login())
 
     }
     

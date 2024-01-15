@@ -1,20 +1,41 @@
 
 // Temporary font imports
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
 
 :root {
     
     // Bodies / large blanks
-    --c-bg-body: #141317;
-    --c-fg-body: #ffffff;
+    --c-bg: #212229;
+    --c-fg: #FFFFFF;
+
+    // Login screen
+
+    --c-login-bg:                   #212229;
+    --c-login-fg:                   #ffffff;
+    --c-login-fg-hint:              #63667F;
+    --c-login-input-fg-inactive:    #63667F;
+    --c-login-input-fg-active:      #ffffff;
+    --c-login-input-underline:      #63667F;
+    --c-login-btn-bg:               #ffffff;
+    --c-login-btn-fg:               #000000;
+    --c-login-btn-bg-hover:         #E2E3EA;
 
 }
 
 body {
-    background-color: var(--c-bg-body);
+    background-color: var(--c-bg);
     margin: 0;
-    color: var(--c-fg-body);
-    font-family: 'Roboto';
     font-weight: 400;
-    font-size: 12;
+}
+
+* {
+    user-select: none;
+    color: var(--c-fg);
+    font-family: 'Quicksand';
+    font-weight: 400;
+    letter-spacing: 0.015em;
+}
+
+a, i, p, span, input {
+    font-size: 14px;
 }
