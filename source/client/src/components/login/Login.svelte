@@ -3,8 +3,12 @@
     // Libraries | Types ================================================================
 
     import User from '../../lib/User'
+    import Timing from '../../lib/Timing'
 
     // Svelte ===========================================================================
+
+	import { fade, slide, blur } from 'svelte/transition'
+
     // Components =======================================================================
 
     import Input from './$CredentialsField.svelte'
@@ -19,6 +23,7 @@
     let _status: [string, string] = ['', '']
     let _statusOld: [string, string] = ['', '']
     let _errCount = 0
+    let _visible = true
 
     // Form submit ======================================================================
 
@@ -32,9 +37,7 @@
 
             if (status === 200) {
                 _status = ['Logged in successfully.', '']
-                _username = ''
-                _password = ''
-                return
+                return Timing.desync(() => _visible = false)
             }
 
             if (status instanceof Error) return _status = [status.name, status.message]
@@ -61,45 +64,53 @@
 
 </script>
 
-<div class="login">
+{#if _visible}
+    <div class="login" data-visible={_visible} transition:blur={{ delay: 150, duration: 600 }}>
 
-    <div class="content">
-        <form on:submit|preventDefault={submit}>
-            <Input 
-                type="text"
-                name="username" 
-                placeholder="Username" 
-                bind:input={username} 
-                bind:value={_username} 
-                on:enter={e => _username && password.focus()}
-            />
-            <Input 
-                type="password" 
-                name="password" 
-                placeholder="Password" 
-                bind:input={password} 
-                bind:value={_password} 
-                on:enter={e => _password && submit(e)}
-            />
-            <button on:click={submit}>Login</button>
-        </form>
+        <div class="content">
+            <form on:submit={submit}>
+                <Input 
+                    type="text"
+                    name="username"
+                    placeholder="Username"
+                    transitionDelay={0}
+                    bind:input={username}
+                    bind:value={_username}
+                    on:enter={e => _username && password.focus()}
+                />
+                <Input 
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    transitionDelay={50}
+                    bind:input={password}
+                    bind:value={_password}
+                    on:enter={e => _password && submit(e)}
+                />
+                <button on:click={submit} transition:blur={{ delay: 100, amount: 0 }}>
+                    Login
+                </button>
+            </form>
 
-        <p class="status">{_status[0]}</p>
-        <p class="status dark">{_status[1]}<br>{_errCount ? `(${_errCount+1})` : ''}</p>
-        
-        <footer>
-            <p>
-                Forgot the password?
-                <br/>
-                <span>
-                    Contact the administrator or<br/>
-                    reset it from server console.
-                </span>
-            </p>
-        </footer>
+            <div class="status" transition:blur={{ delay: 150, amount: 0 }}>
+                <p class="code">{_status[0]}</p>
+                <p class="message">{_status[1]}<br>{_errCount ? `(${_errCount+1})` : ''}</p>
+            </div>
+
+            <footer transition:blur={{ delay: 200, amount: 0 }}>
+                <p>
+                    Forgot the password?
+                    <br/>
+                    <span>
+                        Contact the administrator or<br/>
+                        reset it from server console.
+                    </span>
+                </p>
+            </footer>
+        </div>
+
     </div>
-
-</div>
+{/if}
 
 <style lang="scss">
 
@@ -144,12 +155,29 @@
         }
     }
 
+    .status {
+        p.code {
+            color: var(--c-login-fg);
+            display: block;
+            height: 18px;
+            margin: 3.5em 0 1em 0;
+            text-align: center;
+        }
+        p.message {
+            color: var(--c-login-fg-dimmed);
+            display: block;
+            height: 40px;
+            margin: 1em 0 1em 0;
+            text-align: center;
+        }
+    }
+
     footer {
         margin-top: 100px;
         span {
             display: inline-block;
             margin-top: 0.5em;
-            color: var(--c-login-fg-hint);
+            color: var(--c-login-fg-dimmed);
         }
     }
 

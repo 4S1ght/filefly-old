@@ -9,6 +9,7 @@
     // Svelte ===========================================================================
 
     import { onMount, onDestroy, createEventDispatcher } from "svelte"
+	import { blur } from 'svelte/transition'
 
     // Components =======================================================================
     // Vars | State =====================================================================
@@ -18,6 +19,7 @@
     export let placeholder: string = ''
     export let type: HTMLInputTypeAttribute = 'text'
     export let input: HTMLInputElement
+    export let transitionDelay: number
 
     let _active = false
     
@@ -47,7 +49,7 @@
 
 </script>
 
-<div class="credentials-field" data-active={_active}>
+<div class="credentials-field" data-active={_active} transition:blur={{ delay: transitionDelay, amount: 0 }}>
     <span class="placeholder">{placeholder}</span>
     <input {name} 
         bind:this={input} 
