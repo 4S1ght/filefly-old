@@ -1,24 +1,32 @@
 
 // Temporary font imports
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
     
     // Bodies / large blanks
-    --c-bg: #212229;
-    --c-fg: #FFFFFF;
+    --c-bg: #ffffff;
+    --c-fg: #303033;
+
+    --c-theme-1: #45b4ff;
 
     // Login screen
 
-    --c-login-bg:                   #212229;
-    --c-login-fg:                   #ffffff;
-    --c-login-fg-dimmed:            #63667F;
-    --c-login-input-fg-inactive:    #63667F;
-    --c-login-input-fg-active:      #ffffff;
-    --c-login-input-underline:      #63667F;
+    --c-login-bg:                   #fbfbfd;
+    --c-login-fg:                   #000000;
+    --c-login-fg-dimmed:            #808288;
+    --c-login-input-fg-text:        #000000;
+    --c-login-input-fg-label:       #808288;
+    --c-login-input-fg-holder:      #808288;
+    --c-login-input-border:         #808288;
+    --c-login-input-border-focus:   var(--c-theme-1);
     --c-login-btn-bg:               #ffffff;
     --c-login-btn-fg:               #000000;
     --c-login-btn-bg-hover:         #E2E3EA;
+    --c-login-prompt-bg:            #ffffff;
+    --c-login-prompt-shadow:        #00000033;
+    --c-login-footer-bg:            #f2f2f7;
+    --c-login-footer-fg:            #808288;
 
 }
 
@@ -31,9 +39,9 @@ body {
 * {
     user-select: none;
     color: var(--c-fg);
-    font-family: 'Quicksand';
+    font-family: 'Poppins';
     font-weight: 400;
-    letter-spacing: 0.015em;
+    // letter-spacing: 0.015em;
 }
 
 a, i, p, span, input {

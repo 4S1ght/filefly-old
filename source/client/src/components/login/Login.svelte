@@ -29,7 +29,7 @@
 
     async function submit(e: Event) {
         try {
-            
+
             e.preventDefault()
             const status = await User.login(_username, _password, false)
 
@@ -68,46 +68,50 @@
     <div class="login" data-visible={_visible} transition:blur={{ delay: 150, duration: 600 }}>
 
         <div class="content">
-            <form on:submit={submit}>
-                <Input 
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    transitionDelay={0}
-                    bind:input={username}
-                    bind:value={_username}
-                    on:enter={e => _username && password.focus()}
-                />
-                <Input 
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    transitionDelay={50}
-                    bind:input={password}
-                    bind:value={_password}
-                    on:enter={e => _password && submit(e)}
-                />
-                <button on:click={submit} transition:blur={{ delay: 100, amount: 0 }}>
-                    Login
-                </button>
-            </form>
+            
+            <div class="prompt">
+                <h2 transition:blur={{ delay: 0, duration: 600 }}>Login to Filefly</h2>
+                <form on:submit={submit}>
+                    <Input 
+                        type="text"
+                        name="username"
+                        placeholder="Username"
+                        transitionDelay={100}
+                        bind:input={username}
+                        bind:value={_username}
+                        on:enter={e => _username && password.focus()}
+                    />
+                    <Input 
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        transitionDelay={200}
+                        bind:input={password}
+                        bind:value={_password}
+                        on:enter={e => _password && submit(e)}
+                    />
+                </form>
 
-            <div class="status" transition:blur={{ delay: 150, amount: 0 }}>
-                <p class="code">{_status[0]}</p>
-                <p class="message">{_status[1]}<br>{_errCount ? `(${_errCount+1})` : ''}</p>
+                <div class="status" transition:blur={{ delay: 300, amount: 0 }}>
+                    <p class="code">{_status[0]}</p>
+                    <p class="message">{_status[1]}<br>{_errCount ? `(${_errCount+1})` : ''}</p>
+                </div>
             </div>
 
-            <footer transition:blur={{ delay: 200, amount: 0 }}>
-                <p>
-                    Forgot the password?
-                    <br/>
-                    <span>
-                        Contact the administrator or<br/>
-                        reset it from server console.
-                    </span>
-                </p>
-            </footer>
         </div>
+        
+
+        <footer transition:blur={{ delay: 400, amount: 0 }}>
+            <div class="help">
+                <p>Forgot password?</p>
+                <p>Contact the administrator or <br/> reset it from server console.</p>
+            </div>
+            <div class="row">
+                <a class="item" href="/">Patreon</a>
+                <a class="item" href="/">Credits</a>
+                <a class="item" href="/">Plugins</a>
+            </div>
+        </footer>
 
     </div>
 {/if}
@@ -117,6 +121,7 @@
     .login {
         position: fixed;
         display: flex;
+        flex-direction: column;
         height: 100vh;
         width: 100%;
         background: var(--c-login-bg);
@@ -127,59 +132,91 @@
         display: block;
         margin: auto;
         width: 90%;
-        max-width: 300px;
-    }
+        max-width: 600px;
 
-    form {
+        .prompt {
+            padding: 3.5em;
+            margin: 2em 0 2em 0;
+            border-radius: 2.5em;
+            box-shadow: 0 0 3em var(--c-login-prompt-shadow);
+            background-color: var(--c-login-prompt-bg);
+            
+            h2 {
+                font-weight: 600;
+                text-align: center;
+            }
+            
+            form {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            .status {
+                p.code {
+                    color: var(--c-login-fg);
+                    display: block;
+                    height: 18px;
+                    margin: 3.5em 0 0.5em 0;
+                    font-weight: 500;
+                    text-align: center;
+                }
+                p.message {
+                    color: var(--c-login-fg-dimmed);
+                    display: block;
+                    height: 40px;
+                    margin: 0.5em 0 0.5em 0;
+                    text-align: center;
+                }
+            }
+        }
+    }
+    
+    footer {
+        width: 100%;
+        padding: 2em 0;
+        background-color: var(--c-login-footer-bg);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-    }
 
-    button {
-        background-color: var(--c-login-btn-bg);
-        color: var(--c-login-btn-fg);
-        border: none;
-        margin-top: 3em;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.3em;   
-        cursor: pointer;
-
-        &:hover {
-            background-color: var(--c-login-btn-bg-hover);
-            transition: background-color 0.1s;
-        }
-    }
-
-    .status {
-        p.code {
-            color: var(--c-login-fg);
-            display: block;
-            height: 18px;
-            margin: 3.5em 0 1em 0;
+        .help p {
+            font-size: 12px;
+            color: var(--c-login-footer-fg);
             text-align: center;
         }
-        p.message {
-            color: var(--c-login-fg-dimmed);
-            display: block;
-            height: 40px;
-            margin: 1em 0 1em 0;
-            text-align: center;
-        }
-    }
 
-    footer {
-        margin-top: 100px;
-        span {
-            display: inline-block;
-            margin-top: 0.5em;
-            color: var(--c-login-fg-dimmed);
-        }
-    }
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: center; 
 
+            .item {
+                position: relative;
+                padding: 0 1em 0 1em;
+                    font-size: 12px;
+                    color: var(--c-login-footer-fg);
+
+                &::after {
+                    content: '';
+                    height: 1.3em;
+                    width: 2px;
+                    position: absolute;
+                    right: 0;
+                    top: 50%;
+                    transform: translateX(50%) translateY(-50%);
+                    background: var(--c-login-footer-fg);
+                    opacity: 0.25;
+                }
+                &:last-child::after {
+                    display: none;
+                }
+            }
+        }
+
+
+    }
   
 </style>

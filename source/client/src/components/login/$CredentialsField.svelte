@@ -66,37 +66,42 @@
         display: block;
         position: relative;
         padding-top: 4px;
-        margin-bottom: 15px;
+        margin-top: 15px;
+        margin-bottom: 10px;
         width: 100%;
         
-        span {
-            display: block;
-            position: absolute;
-            font-weight: 500;
-            color: var(--c-login-input-fg-inactive);
-            top: 50%;
-            left: 0;
-            transform: translateY(-28%);
-            pointer-events: none;
-            transition: transform 0.1s;
+        input {
+            background-color: transparent;
+            border: solid 1px var(--c-login-input-border);
+            border-radius: 1.2em;
+            color: var(--c-login-input-text);
+            padding: 24px 15px 7px 15px;
+            outline: none;
+            width: calc(100% - 32px);
+            transition: border-color 0.2s, box-shadow 0.2s;
+
+            &:focus {
+                border-color: var(--c-login-input-border-focus);
+                box-shadow: 0 0 3px var(--c-login-input-border-focus);
+            }
         }
 
-        input {
-            height: 100%;
-            width: calc(100% - 2px);
-            padding: 10px 0;
-            margin: 0;
-            color: var(--c-login-input-fg-active);
-            font-weight: 500;
-            background-color: transparent;
-            border: none;
-            border-bottom: solid 1px var(--c-login-input-underline);
-            outline: none !important;
+        span {
+            position: absolute;
+            left: 15px; 
+            top: 50%;
+            transform: translateY(-38%);
+            line-height: 1em;
+            color: var(--c-login-input-fg-holder);
+            pointer-events: none;
+            transition: transform 0.1s, color 0.1s;
         }
 
         &[data-active="true"] span {
-            transform: translateY(-135%) translateX(-14.5%) scale(0.75);
+            transform: translate(-10%, -100%) scale(0.8);
+            color: var(--c-login-input-fg-label);
         }
+
     }
 
 </style>
