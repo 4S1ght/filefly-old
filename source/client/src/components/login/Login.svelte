@@ -36,7 +36,7 @@
             _statusOld = _status
 
             if (status === 200) {
-                _status = ['Logged in successfully.', '']
+                _status = [' ', ' ']
                 return Timing.desync(() => _visible = false)
             }
 
