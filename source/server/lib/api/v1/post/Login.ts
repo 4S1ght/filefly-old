@@ -21,7 +21,7 @@ const Body = object({
     long: boolean()
 })
 
-export type TPostLoginBody = z.infer<typeof Body>
+export type HTTPLoginBody = z.infer<typeof Body>
 
 // Implementation =============================================================
 
@@ -33,7 +33,7 @@ const login: THandlerSetup = () => {
         try {
 
             // Check the body
-            const body: TPostLoginBody = req.body
+            const body: HTTPLoginBody = req.body
             if (Body.safeParse(body).success === false) return res.status(400).end()
 
             // Create a new session & deny access on bad credentials

@@ -125,6 +125,23 @@ export default new class Session {
     }
 
 
+    /**
+     * Given a session ID, cache is checked for whether the ID is valid
+     * and is then renewed. Returns `undefined` on fail and a session object on success.
+     * @param sid Session ID
+     * @returns Session object (if successful) or undefined (if not)
+     */
+    public renew(sid: string) {
+
+        const session = this.cache.get(sid)
+        if (!session) return undefined
+
+        session.updated = new Date().toISOString()
+        return session
+
+    }
+
+
     // Helpers ================================================================
 
     private _getUniqueSID(): ProcAsync<string> {

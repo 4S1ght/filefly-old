@@ -32,6 +32,8 @@ export type THandlerSetup = () => THandler
 // Handlers ===================================================================
 
 import login from './post/Login.js'
+import sessionRenew from './get/SessionRenew.js'
+import sessionInfo from './get/SessionInfo.js'
 
 // Implementation =============================================================
  
@@ -95,6 +97,8 @@ export default new class API {
         apiRouter.use(cookieParser())
 
         apiRouter.post('/session/new', login())
+        apiRouter.get('/session/renew', sessionRenew())
+        apiRouter.get('/session/info', sessionInfo())
 
     }
     
