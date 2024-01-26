@@ -43,7 +43,7 @@ const login: THandlerSetup = () => {
             res.cookie('sid', sid, {
                 maxAge: body.long 
                     ? Config.sessions.extendedDuration * 1000*60*60*24
-                    : Config.sessions.duration * 1000*60*60
+                    : Config.sessions.duration * 1000*60
             })
 
             res.end()
