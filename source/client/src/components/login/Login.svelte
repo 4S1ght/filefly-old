@@ -7,11 +7,12 @@
 
     // Svelte ===========================================================================
 
-	import { fade, slide, blur } from 'svelte/transition'
+	import { blur } from 'svelte/transition'
 
     // Components =======================================================================
 
     import Input from './$CredentialsField.svelte'
+    import { onMount } from 'svelte';
 
     // Vars | State =====================================================================
 
@@ -23,7 +24,8 @@
     let _status: [string, string] = ['', '']
     let _statusOld: [string, string] = ['', '']
     let _errCount = 0
-    let _visible = true
+    let _awaitingLogin = true
+    let _awaitingRenew = true
 
     // Form submit ======================================================================
 
@@ -37,7 +39,7 @@
 
             if (status === 200) {
                 _status = [' ', ' ']
-                return Timing.desync(() => _visible = false)
+                return Timing.desync(() => _awaitingLogin = false)
             }
 
             if (status instanceof Error) return _status = [status.name, status.message]
@@ -62,10 +64,27 @@
         }
     }
 
+    onMount(async () => {
+        const renewed = await User.renewSession()
+        if (renewed) {
+            _awaitingLogin = false
+            _awaitingRenew = false
+        } 
+        else {
+            _awaitingRenew = false
+        }
+    }) 
+
 </script>
 
-{#if _visible}
-    <div class="login" data-visible={_visible} transition:blur={{ delay: 150, duration: 600 }}>
+{#if _awaitingRenew}
+<div class="curtain" transition:blur={{ delay: 600, duration: 600 }}>
+    <div class="loading-icon"></div>
+</div>
+{/if}
+
+{#if _awaitingLogin}
+    <div class="login" transition:blur={{ delay: 150, duration: 600 }}>
 
         <div class="content">
             
@@ -118,6 +137,28 @@
 
 <style lang="scss">
 
+    .curtain {
+        position: fixed;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100%;
+        background: var(--c-login-curtain-bg);
+        z-index: 1001;
+
+        .loading-icon {
+            height: 50px;
+            width: 50px;
+            background-color: var(--c-login-curtain-logo-bg);
+            border-radius: 13px;
+            box-shadow: 0 0 .5em var(--c-login-curtain-logo-shadow);
+            transform: translateY(-10vh);
+        }
+
+    }
+
     .login {
         position: fixed;
         display: flex;
@@ -126,6 +167,7 @@
         width: 100%;
         background: var(--c-login-bg);
         overflow: auto;
+        z-index: 1000;
     }
 
     .content {

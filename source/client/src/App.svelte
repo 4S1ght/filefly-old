@@ -3,5 +3,5 @@
 </script>
 
 <main>
-    <Login></Login>
+    <Login/>
 </main>
